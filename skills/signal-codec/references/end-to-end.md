@@ -248,7 +248,24 @@ python skills/signal-codec/examples/audio_code_synth.py melody.wav \
 
 本机已验证：C4 段主频 262.9 Hz，理论值 261.6 Hz，差值在 FFT 分辨率（约 2.5 Hz）以内。
 
-### 5b. Gemini Lyria ⚠️
+### 5b. 代码作曲流水线 ✅
+
+参考 [komiyoo/musician](https://github.com/komiyoo/musician)：乐谱 JSON → 分轨 MIDI → 每轨渲染 → 每轨响度对齐 → pedalboard 效果 → 母带 LUFS + 峰值限幅。乐谱格式与设计说明见 [encode/audio](encode/audio.md)。
+
+```bash
+pip install numpy scipy soundfile mido pyloudnorm pedalboard
+python skills/signal-codec/examples/music_pipeline.py render spec.json out/
+python skills/signal-codec/examples/music_pipeline.py sonify sensor.csv out_s/ --column value --bars 8
+```
+
+本机结果（numpy 兜底引擎；没装 FluidSynth，`--soundfont` 分支未跑）：
+
+- 8 小节、5 个声部、22.2 秒。`full.mid` 有 5 轨，旋律 D5 段主频 587.8 Hz（理论 587.3 Hz）。
+- 母带 −16.0 LUFS（目标 −16），峰值 −4.39 dBFS；`--narration` 模式峰值 −4.86 dBFS。
+- 可听化：200 点数据压缩成 64 个八分音符，数据与音高相关系数 0.996。
+- 测出并绕开一个问题：pedalboard `Limiter` 自带增益补偿，会把母带抬到约 −12 LUFS，改用 numpy 前瞻限幅器。
+
+### 5c. Gemini Lyria ⚠️
 
 ```python
 import base64
@@ -264,7 +281,7 @@ if interaction.output_audio:
         f.write(base64.b64decode(interaction.output_audio.data))
 ```
 
-### 5c. MusicGen（本地 Transformers）⚠️（未运行，模型较大）
+### 5d. MusicGen（本地 Transformers）⚠️（未运行，模型较大）
 
 ```python
 import scipy.io.wavfile as wavfile

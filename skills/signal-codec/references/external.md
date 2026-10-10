@@ -12,6 +12,8 @@
 | 同上 `slack-gif-creator` | 生成 GIF 动图 | 编码 | |
 | 同上 `pdf`、`docx`、`pptx`、`xlsx` | 读写文档类文件 | 解码/编码 | 文档不是本仓库核心，仅在输入输出是这些格式时使用 |
 | [vargHQ/skills](https://github.com/vargHQ/skills)（`varg-ai`） | 聚合 AI 视频、图像、语音、音乐生成 | 编码 | MIT；需要 `VARG_API_KEY`；本地模式需要 bun 和 ffmpeg |
+| [SJY051/music-composition](https://github.com/SJY051/music-composition) | 乐理、和声、旋律、曲式、配器、风格分析与作曲建议 | 编码（作曲决策） | 文档 CC BY 4.0，脚本 MIT。只管作曲决策，不生成 MIDI 或音频；与下面的 musician 搭配使用。只读过其 SKILL.md 的描述与 UPSTREAM.md，未逐章审阅，未在本仓库运行 |
+| [komiyoo/musician](https://github.com/komiyoo/musician)（项目，不是 skill） | 代码作曲：乐谱 → MIDI → Surge XT / sfizz / FluidSynth / numpy 兜底 → 响度对齐 → pedalboard 混音；故事配乐、MusicXML 交付、看图配乐、代码可听化 | 编码 | MIT。内置上面的 music-composition skill。本仓库 `examples/music_pipeline.py` 是它的最小化版本 |
 | 社区：VoiceClaw（openclaw/skills） | 本地 whisper.cpp 转写 + Piper 语音回复 | 双向 | 来自聚合站，使用前读源码 |
 | 社区：edge-tts（sundial-org/awesome-openclaw-skills） | 无需 key 的 TTS | 编码 | 依赖微软在线服务，文本会发送到云端 |
 
@@ -25,7 +27,8 @@
 | 语音识别 | faster-whisper、whisper.cpp、openai/whisper |
 | 说话人分离 | pyannote.audio |
 | 语音合成 | Piper、Kokoro、edge-tts |
-| 音乐生成 | AudioCraft（MusicGen） |
+| 音乐生成（模型） | AudioCraft（MusicGen） |
+| 音乐生成（代码） | mido / music21（乐谱与 MIDI）、FluidSynth、sfizz、Surge XT（渲染）、pyloudnorm（响度）、pedalboard（效果） |
 | 音频分析 | librosa、SoundFile、SciPy |
 | OCR | Tesseract、PaddleOCR |
 | 视频镜头切分 | PySceneDetect |

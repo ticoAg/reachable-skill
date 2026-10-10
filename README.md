@@ -30,7 +30,7 @@ flowchart LR
 
     subgraph ENC["编码 encode"]
         E1["TTS<br/>Piper 本地 · OpenAI · ElevenLabs"]
-        E2["音乐<br/>程序合成 · Lyria · MusicGen"]
+        E2["音乐<br/>代码作曲：MIDI → 渲染 → LUFS → pedalboard<br/>数据可听化 · Lyria · MusicGen"]
         E3["图像<br/>Diffusers · gpt-image · Gemini 图像"]
         E4["视频<br/>代码生成（Pillow + FFmpeg · Manim）· Veo"]
         E5["波形 / IQ<br/>synth_wave.py · NumPy · GNU Radio"]
@@ -63,7 +63,8 @@ flowchart LR
 | 解码·3D | Trimesh、Open3D、Blender | 网格检查、点云、渲染 | ✅ Trimesh 本机运行；Blender 未装 |
 | 解码·生理 | MNE、WFDB、NeuroKit2 | EDF/WFDB 读取、ECG 处理 | ⚠️ 未运行（无样本数据） |
 | 编码·语音 | Piper（本地）、OpenAI TTS、ElevenLabs | 文本转语音 | ✅ Piper 本机运行并回转写；云端 ⚠️ |
-| 编码·音乐 | NumPy 程序合成、Lyria、MusicGen | 乐谱渲染、生成式音乐 | ✅ 程序合成本机运行；Lyria ⚠️；MusicGen ⚠️ |
+| 编码·音乐（代码） | `examples/music_pipeline.py`：mido → numpy 兜底 / FluidSynth → pyloudnorm → pedalboard；参考 [komiyoo/musician](https://github.com/komiyoo/musician) | 乐谱 → 分轨 MIDI → 混音成品；数据可听化 | ✅ numpy 引擎本机运行；FluidSynth 分支未跑 |
+| 编码·音乐（模型） | Lyria、MusicGen | 文本 → 音乐 | ⚠️ 未运行 |
 | 编码·图像 | Diffusers、gpt-image、Gemini 图像 | 文生图 | ⚠️ 未运行（需 GPU 或 key） |
 | 编码·视频（代码） | `examples/video_code_render.py`、Manim、MoviePy、Remotion | 分镜 → 帧 → MP4，可带音轨 | ✅ 脚本本机实跑；其余工具未跑 |
 | 编码·视频（模型） | Veo | 文生视频 | ⚠️ 未运行。Sora 已于 2026-09-24 下线 |
@@ -82,7 +83,8 @@ skills/signal-codec/
     render_view.py         信号 → 波形 + 频谱图 PNG，供人或多模态模型查看
     synth_wave.py          参数 → 正弦/方波/扫频/噪声/复数 IQ（WAV、CSV、cf32）
   examples/
-    audio_code_synth.py    乐谱文本 → WAV（程序合成）
+    audio_code_synth.py    乐谱文本 → WAV（单文件程序合成，最简入口）
+    music_pipeline.py      乐谱 JSON → 分轨 MIDI → 渲染 → 响度对齐 → 效果与母带；数据 → 音乐
     tts_asr_roundtrip.py   文本 → Piper 语音 → faster-whisper 转写，检查词召回
     video_code_render.py   分镜 JSON → Pillow 逐帧绘制 → FFmpeg 编码 MP4，可混入音轨
   references/
@@ -109,7 +111,8 @@ Claude Code 复制到 `~/.claude/skills/`，或项目内 `.claude/skills/`。重
 ```bash
 uv venv .venv && . .venv/bin/activate
 uv pip install numpy scipy matplotlib soundfile librosa pandas trimesh \
-    piper-tts faster-whisper huggingface_hub sigmf pillow imageio-ffmpeg
+    piper-tts faster-whisper huggingface_hub sigmf pillow imageio-ffmpeg \
+    mido pyloudnorm pedalboard
 ```
 
 FFmpeg、GNU Radio、Blender 为独立软件。模型 API 需要各自的 key，通过环境变量设置（`OPENAI_API_KEY`、`GEMINI_API_KEY`、`ELEVENLABS_API_KEY`），不要写进代码。
@@ -120,6 +123,8 @@ FFmpeg、GNU Radio、Blender 为独立软件。模型 API 需要各自的 key，
 - “用 $signal-codec 把这份 IMU CSV 画成图并检查时间戳和缺失值。”
 - “用 $signal-codec 把这段文字做成语音，再用 ASR 回转写验证。”
 - “用 $signal-codec 把这段乐谱渲染成 WAV。”
+- “用 $signal-codec 给这段口播写 30 秒 D 小调铺底配乐，人声频段让位，母带 −18 LUFS。”
+- “用 $signal-codec 把这份传感器 CSV 变成一段能听出趋势的音乐。”
 - “用 $signal-codec 用代码做一段 10 秒的讲解视频：标题、波形动画、结果柱状图，配上刚才的音乐。”
 - “用 $signal-codec 生成一段 200–4000 Hz 的扫频测试音。”
 
