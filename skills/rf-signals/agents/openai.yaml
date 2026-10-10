@@ -1,0 +1,4 @@
+interface:
+  display_name: "RF and IQ Signals"
+  short_description: "Analyze native signals and integrate domain tools"
+  default_prompt: "Use $rf-signals to analyze my data and connect suitable tools."

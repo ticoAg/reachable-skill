@@ -1,0 +1,4 @@
+interface:
+  display_name: "Signal Analysis Router"
+  short_description: "Route heterogeneous signals to specialist workflows"
+  default_prompt: "Use $analyze-signals to choose tools and analyze my raw signal."

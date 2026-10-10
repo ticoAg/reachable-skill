@@ -1,0 +1,4 @@
+interface:
+  display_name: "Time Series and Sensors"
+  short_description: "Analyze native signals and integrate domain tools"
+  default_prompt: "Use $timeseries-signals to analyze my data and connect suitable tools."
