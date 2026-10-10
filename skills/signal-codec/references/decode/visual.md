@@ -32,7 +32,7 @@ if image.ndim == 3 and image.shape[2] == 3:              # 灰度、BGRA、16-bi
 | 视频里说了什么 | 抽出音轨，走 [decode/audio](audio.md) 的 ASR，保留时间戳 |
 | 镜头切换 | PySceneDetect，或 FFmpeg 的 `select='gt(scene,0.4)'` |
 
-抽帧拼图，每 5 秒一帧，排成 4 列（需要本机 FFmpeg；阈值与布局按任务调整）：
+抽帧拼图，每 5 秒一帧，排成 4 列（阈值与布局按任务调整）。该 filter 链已用 imageio-ffmpeg 自带的 FFmpeg 7.0.2 实跑；没有系统 FFmpeg 时可 `pip install imageio-ffmpeg`，用 `imageio_ffmpeg.get_ffmpeg_exe()` 取得路径：
 
 ```bash
 ffmpeg -i input.mp4 -vf "fps=1/5,scale=320:-1,tile=4x4" -frames:v 1 sheet.png

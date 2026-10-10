@@ -153,7 +153,20 @@ video = operation.response.generated_videos[0]
 client.files.download(file=video.video, destination="veo_out.mp4")
 ```
 
-### 3b. Sora ⚠️ 已停用
+### 3b. 代码生成视频 ✅
+
+不用生成模型：分镜 JSON → Pillow 逐帧绘制 → FFmpeg 编码 H.264，可混入音轨。适合讲解、数据动画、片头字幕这类需要内容精确的视频。
+
+```bash
+python skills/signal-codec/examples/video_code_render.py storyboard.json out.mp4 \
+  --audio melody.wav \
+  --font /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf \
+  --font /usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf
+```
+
+本机结果：240 帧，8.01 秒，1280×720，30 fps，H.264 + AAC。4.5 秒的音频用静音补齐，没有截断视频。用抽帧拼图检查过：标题淡入淡出、波形滚动、柱状图增长，中英混排都正常。CPU 上渲染耗时约 4.6 秒。分镜格式和其他代码视频工具（Manim、matplotlib animation、MoviePy、Remotion）见 [encode/visual](encode/visual.md)。
+
+### 3c. Sora ⚠️ 已停用
 
 官方文档注明 Sora 2 模型与 Videos API 已于 2026-09-24 下线，**没有一对一的替代 API**。不要按旧示例调用。需要视频生成时，改用 3a 或其他仍在服务中的模型。
 
