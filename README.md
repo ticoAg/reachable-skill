@@ -1,4 +1,4 @@
-# Signal Skills
+# Reachable Skill
 
 一个面向 AI Agent 的 skill：`signal-codec`。它提供两类能力：
 
