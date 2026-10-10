@@ -1,61 +1,132 @@
 # Signal Skills
 
-面向 AI Agent 的多类型数据与信号分析、工具使用、集成实践 skill 仓库。
+一个面向 AI Agent 的 skill：`signal-codec`。它提供两类能力：
 
-从原始信号出发，调用领域程序、专业软件和模型完成分析；需要生成时，再选择合成器、仿真器或生成模型。中间处理方式开放。
+- **解码（decode）**：把图像、音频、视频、时序、生物信号、RF/IQ、点云等原始信号，变成人或 LLM 能读懂的数值、图和文本。
+- **编码（encode）**：把文本、参数或其他内容，变成语音、音乐、图像、视频、波形、IQ、3D 几何等信号。
 
-**保留工具原生输出。没有统一 SIR、统一结果 schema、强制文本化，也不要求分析与生成互为逆过程。** 数组、DataFrame、MNE Raw、图像、点云、音频、工具原生文件、模型对象和自然语言都可以直接使用。接口适配只发生在确实需要连接的两个工具之间。
+仓库提供转换与理解的工具、方法，以及互联网上已有 skill、CLI 和模型的用法与取舍。
 
-## Skills
+**保留工具原生输出。没有统一中间表示、统一结果 schema、强制文本化，也不要求解码与编码互为逆过程。** 接口适配只发生在确实需要连接的两个工具之间。
 
-| Skill | 数据与任务 | 起始工具 |
-|---|---|---|
-| `analyze-signals` | 识别输入、选路、跨工具集成 | 文件探测、原生 reader |
-| `audio-signals` | 音频、语音、音乐、声学信号 | FFmpeg、SoundFile、librosa、SciPy |
-| `visual-signals` | 图像、视频、帧与时间信息 | FFmpeg、OpenCV |
-| `timeseries-signals` | 表格、时间序列、IMU、振动、传感器 | pandas、NumPy、SciPy |
-| `biosignals` | EEG、ECG、EMG、EDF 等 | MNE、WFDB、NeuroKit2 |
-| `rf-signals` | IQ、RF、频谱与通信录波 | SigMF、NumPy、SciPy、GNU Radio |
-| `spatial-signals` | 点云、网格、深度、3D 几何 | Open3D、Trimesh、Blender |
+## 技术栈
+
+```mermaid
+flowchart LR
+    IN["原始输入<br/>图像 / 音频 / 视频 / CSV / EDF / IQ / 点云"] --> PROBE["probe.py<br/>格式识别（标准库）"]
+    TXT["文本 / 参数 / 乐谱"] --> ENC
+
+    PROBE --> DEC
+    subgraph DEC["解码 decode"]
+        D1["VLM 读图<br/>Gemini · OpenAI 多模态"]
+        D2["FFmpeg / FFprobe<br/>抽帧 · 拼图 · 流信息"]
+        D3["faster-whisper / Whisper<br/>ASR 转写"]
+        D4["SciPy · pandas · librosa<br/>PSD · 时间检查 · 节拍"]
+        D5["MNE · WFDB · NeuroKit2<br/>EDF · WFDB · 生理信号"]
+        D6["SigMF · GNU Radio<br/>IQ 元数据 · 解调"]
+        D7["Open3D · Trimesh · Blender<br/>点云 · 网格 · 渲染"]
+        RV["render_view.py<br/>波形 + 频谱图 PNG"]
+    end
+
+    subgraph ENC["编码 encode"]
+        E1["TTS<br/>Piper 本地 · OpenAI · ElevenLabs"]
+        E2["音乐<br/>程序合成 · Lyria · MusicGen"]
+        E3["图像<br/>Diffusers · gpt-image · Gemini 图像"]
+        E4["视频<br/>Veo · Sora（已下线）"]
+        E5["波形 / IQ<br/>synth_wave.py · NumPy · GNU Radio"]
+        E6["3D<br/>Trimesh · Open3D · Blender"]
+    end
+
+    DEC --> OUT1["文本 · 数值 · 图 · 原生对象"]
+    ENC --> OUT2["WAV · MP3 · PNG · MP4 · cf32 · PLY"]
+    OUT2 -. 回读验证 .-> DEC
+    OUT1 --> LLM["LLM / 人<br/>理解与决策"]
+    LLM -. 指定参数 .-> ENC
+
+    subgraph SKILL["skills/signal-codec"]
+        MD["SKILL.md 路由"]
+        REF["references/<br/>decode · encode · external · end-to-end · integration"]
+        SCR["scripts/ · examples/"]
+    end
+    MD --> REF
+    REF -. 指向 .-> DEC
+    REF -. 指向 .-> ENC
+```
+
+| 层 | 组件 | 作用 | 验证状态 |
+|---|---|---|---|
+| 识别 | `scripts/probe.py` | 文件签名、扩展名、ffprobe 流信息，给出该读哪份指南 | ✅ 本机运行 |
+| 解码·视觉 | VLM（Gemini、OpenAI）、FFmpeg、OpenCV | 读图、抽帧、拼图 | ⚠️ VLM 未实跑（无 key）；FFmpeg 未安装，未跑 |
+| 解码·音频 | faster-whisper、SciPy、librosa | 转写、PSD、节拍 | ✅ ASR 与 PSD 本机运行 |
+| 解码·时序 | pandas、SciPy | 时间检查、Welch PSD | ✅ 本机运行 |
+| 解码·RF | SigMF、NumPy、GNU Radio | 元数据、IQ 读取、解调 | ✅ SigMF 写读本机运行；GNU Radio 未装 |
+| 解码·3D | Trimesh、Open3D、Blender | 网格检查、点云、渲染 | ✅ Trimesh 本机运行；Blender 未装 |
+| 解码·生理 | MNE、WFDB、NeuroKit2 | EDF/WFDB 读取、ECG 处理 | ⚠️ 未运行（无样本数据） |
+| 编码·语音 | Piper（本地）、OpenAI TTS、ElevenLabs | 文本转语音 | ✅ Piper 本机运行并回转写；云端 ⚠️ |
+| 编码·音乐 | NumPy 程序合成、Lyria、MusicGen | 乐谱渲染、生成式音乐 | ✅ 程序合成本机运行；Lyria ⚠️；MusicGen ⚠️ |
+| 编码·图像 | Diffusers、gpt-image、Gemini 图像 | 文生图 | ⚠️ 未运行（需 GPU 或 key） |
+| 编码·视频 | Veo | 文生视频 | ⚠️ 未运行。Sora 已于 2026-09-24 下线 |
+| 编码·波形 | `scripts/synth_wave.py`、NumPy | 测试音、扫频、噪声、IQ | ✅ 本机运行 |
+| 编码·3D | Trimesh、Blender | 建模、导出、渲染 | ✅ Trimesh 导出回读；Blender 未装 |
+
+✅ 在本机（CPU、Python 3.13、无 GPU、无 API key）运行通过；⚠️ 依据官方文档编写，未运行。
+
+## 结构
+
+```text
+skills/signal-codec/
+  SKILL.md                 路由：判断方向、识别输入、选 reference
+  scripts/
+    probe.py               识别文件格式并建议阅读哪份 reference（仅标准库）
+    render_view.py         信号 → 波形 + 频谱图 PNG，供人或多模态模型查看
+    synth_wave.py          参数 → 正弦/方波/扫频/噪声/复数 IQ（WAV、CSV、cf32）
+  examples/
+    audio_code_synth.py    乐谱文本 → WAV（程序合成）
+    tts_asr_roundtrip.py   文本 → Piper 语音 → faster-whisper 转写，检查词召回
+  references/
+    decode/{audio,visual,timeseries,biosignals,rf,spatial}.md
+    encode/{audio,visual,timeseries,biosignals,rf,spatial}.md
+    end-to-end.md          端到端调用：VLM、文生图/视频、TTS、音乐、ASR、信号示例
+    external.md            已有的 skill、工具与模型清单
+    integration.md         跨工具连接与工程实践
+```
 
 ## 安装
 
-在支持 `SKILL.md` 的 Agent 中，把需要的 skill 文件夹复制到其 skill 搜索目录。Codex 示例（请先 clone 本仓库并进入仓库根目录）：
+在支持 `SKILL.md` 的 Agent 中，把 `skills/signal-codec` 复制到其 skill 搜索目录。Codex 示例（先 clone 本仓库并进入仓库根目录）：
 
 ```bash
 mkdir -p ~/.codex/skills
-cp -R skills/analyze-signals ~/.codex/skills/
-cp -R skills/audio-signals ~/.codex/skills/
+cp -R skills/signal-codec ~/.codex/skills/
 ```
 
-也可以复制 `skills/` 中全部七个文件夹。重启或刷新客户端后，按客户端的发现机制加载。
-路由 skill 不强制依赖其余 skill：只有安装了对应 skill 时才调用，否则按其索引中的工具文档执行。
+Claude Code 复制到 `~/.claude/skills/`，或项目内 `.claude/skills/`。重启或刷新客户端后加载。
 
-各领域依赖相互独立；按任务安装，不安装一个“大而全”的环境。示例：
+依赖按任务单独安装，不装“大而全”的环境。本机验证过的组合：
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install numpy scipy soundfile librosa
+uv venv .venv && . .venv/bin/activate
+uv pip install numpy scipy matplotlib soundfile librosa pandas trimesh \
+    piper-tts faster-whisper huggingface_hub sigmf
 ```
 
-FFmpeg、GNU Radio、Blender 为独立软件。运行前核对具体版本、平台、编解码器和模型许可。仓库中的 Python 片段是使用配方，不是已对所有平台验证的封装 SDK。
+FFmpeg、GNU Radio、Blender 为独立软件。模型 API 需要各自的 key，通过环境变量设置（`OPENAI_API_KEY`、`GEMINI_API_KEY`、`ELEVENLABS_API_KEY`），不要写进代码。
 
 ## 用法
 
-- “用 $audio-signals 分析录音中的节奏、频谱和削波，保留原始采样率。”
-- “用 $rf-signals 分析这份 SigMF IQ 录波，输出 GNU Radio 可以继续处理的数据。”
-- “用 $timeseries-signals 检查这份 IMU CSV 的时间戳、缺失值与异常，保留 DataFrame。”
-- “用 $analyze-signals 为 EEG 和视频选择分析工具，并设计时间同步方式。”
-- “把分析结果交给指定生成器；只做这个工具要求的局部适配。”
+- “用 $signal-codec 看一下这段录音：转写、频谱图、削波情况。”
+- “用 $signal-codec 把这份 IMU CSV 画成图并检查时间戳和缺失值。”
+- “用 $signal-codec 把这段文字做成语音，再用 ASR 回转写验证。”
+- “用 $signal-codec 把这段乐谱渲染成 WAV。”
+- “用 $signal-codec 生成一段 200–4000 Hz 的扫频测试音。”
 
 ## 内容与状态
 
-每个领域包含精简 `SKILL.md` 和按需读取的 `references/workflows.md`。
-实践指南是作者整理的工程建议；示例没有被声称为生产验证案例。
-基础工具文档核对日期：2026-10-10。运行时仍须检查已安装版本。
-第一版不携带模型权重、用户数据、自动硬件采集或后台上传逻辑。
+- 标 ✅ 的代码在本机运行过。标 ⚠️ 的依据官方文档编写，未实跑。
+- 云端模型名、参数与价格会变动，核对日期 2026-10-10。遇到报错先查官方最新文档。
+- `references/external.md` 的外部 skill 清单来自目录页与搜索结果，未逐个安装测试。
+- 不携带模型权重、用户数据、自动硬件采集或后台上传逻辑。
 
 ## 扩展
 
-见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎增加新模态、可复现案例、模型和专业软件的使用指南。统一的是指南的组织方式，不是数据或分析结果。
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。

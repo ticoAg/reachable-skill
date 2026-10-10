@@ -1,4 +1,0 @@
-interface:
-  display_name: "Images and Video"
-  short_description: "Analyze native signals and integrate domain tools"
-  default_prompt: "Use $visual-signals to analyze my data and connect suitable tools."

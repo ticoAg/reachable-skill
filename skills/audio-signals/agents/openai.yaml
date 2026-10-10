@@ -1,4 +1,0 @@
-interface:
-  display_name: "Audio and Music"
-  short_description: "Analyze native signals and integrate domain tools"
-  default_prompt: "Use $audio-signals to analyze my data and connect suitable tools."

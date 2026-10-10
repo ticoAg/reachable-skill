@@ -1,0 +1,4 @@
+interface:
+  display_name: "Signal Codec"
+  short_description: "Decode signals for LLMs and humans; encode content into signals"
+  default_prompt: "Use $signal-codec to decode my signal file, or to encode this text into audio, image, video or waveform."
