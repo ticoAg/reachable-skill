@@ -318,7 +318,7 @@ print(result.text)
 
 ## 7. 信号处理 SDK 示例
 
-这些是领域库的端到端调用，结果保持原生对象，不套统一格式。下面三段均已在本机运行通过（pandas 3.0.6、SciPy、trimesh 5.1.1、Python 3.13）。
+这些是领域库的端到端调用，结果保持原生对象，不套统一格式。下面四段均已在本机运行通过（pandas 3.0.6、SciPy、trimesh 5.1.1、Python 3.13）。生理信号一段另见该节列出的版本。
 
 **7a. 时序：CSV → 时间检查 → Welch PSD** ✅
 
@@ -373,4 +373,18 @@ print('faces', len(r.faces), 'bounds', np.round(r.bounds, 3).tolist(), 'watertig
 
 本机结果：320 个面，包围盒 ±1，闭合。
 
-**未运行**：EEG（MNE 读 EDF）需要 EDF 样本，本机没有，未验证。
+**7d. 生理：合成 ECG/EEG → WFDB 与 EDF → 读回** ✅
+
+脚本现场生成测试文件：NeuroKit2 生成 ECG，MNE 把已知频率的正弦写成 EDF，再按 [decode/biosignals](decode/biosignals.md) 的方式读回。mV 和 µV 是写入时指定的单位，幅度来自模拟器。
+
+```bash
+python skills/signal-codec/examples/biosignal_roundtrip.py out_biosig/
+```
+
+本机结果（MNE 1.13.2、edfio 0.4.18、WFDB 4.3.1、NeuroKit2 0.2.12、pandas 3.0.6）：
+
+- ECG：20 秒、250 Hz、设定心率 70 bpm（`random_state=42`，默认 `heart_rate_std=1`）。检出 23 个 R 峰，峰间隔平均 69.96 bpm，`ECG_Rate` 均值同为 69.96。
+- WFDB：`rdrecord(..., sampto=3600)` 得到 `fs=250`、单位 mV、通道 ECG。这次 `wrsamp` 写成 32 位（`fmt` 为 32），前 3600 点最大绝对误差 1.862e-10 mV。`atr` 里 23 个 `N` 与 R 峰采样点一致。
+- EDF：10 秒、256 Hz，Fp1 为 50 µV / 10 Hz，Cz 为 30 µV / 6 Hz，导出使用默认 `physical_range='auto'`。读回通道名与 eeg 类型正确，2560 个采样。标注 stim（1.0 s，持续 0.5 s）和 blink（4.5 s，持续 0.2 s）原样回来。两通道相关系数在六位小数下为 1.000000，最大误差 0.00073 µV 和 0.00074 µV。Welch（`nperseg=256`）峰值是 10 Hz 和 6 Hz。
+- `probe.py` 凭文件头把这份 EDF 判为生理信号。`.hea` 和 `.atr` 靠扩展名，`.dat` 被标成有歧义。
+- NeuroKit2 0.2.12 在 pandas 3 上，`ecg_process` 会从内部的 `epochs_create` 打出 copy-on-write 警告（`ChainedAssignmentError`）。R 峰和 `ECG_Rate` 仍然可用。

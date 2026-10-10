@@ -61,7 +61,7 @@ flowchart LR
 | 解码·时序 | pandas、SciPy | 时间检查、Welch PSD | ✅ 本机运行 |
 | 解码·RF | SigMF、NumPy、GNU Radio | 元数据、IQ 读取、解调 | ✅ SigMF 写读本机运行；GNU Radio 未装 |
 | 解码·3D | Trimesh、Open3D、Blender | 网格检查、点云、渲染 | ✅ Trimesh 本机运行；Blender 未装 |
-| 解码·生理 | MNE、WFDB、NeuroKit2 | EDF/WFDB 读取、ECG 处理 | ⚠️ 未运行（无样本数据） |
+| 解码·生理 | MNE、WFDB、NeuroKit2 | EDF/WFDB 读取、ECG 处理 | ✅ 合成 EDF/WFDB 写读；心率与设定一致 |
 | 编码·语音 | Piper（本地）、OpenAI TTS、ElevenLabs | 文本转语音 | ✅ Piper 本机运行并回转写；云端 ⚠️ |
 | 编码·音乐（代码） | `examples/music_pipeline.py`：mido → numpy 兜底 / FluidSynth → pyloudnorm → pedalboard；参考 [komiyoo/musician](https://github.com/komiyoo/musician) | 乐谱 → 分轨 MIDI → 混音成品；数据可听化 | ✅ numpy 引擎本机运行；FluidSynth 分支未跑 |
 | 编码·音乐（模型） | Lyria、MusicGen | 文本 → 音乐 | ⚠️ 未运行 |
@@ -87,6 +87,7 @@ skills/signal-codec/
     music_pipeline.py      乐谱 JSON → 分轨 MIDI → 渲染 → 响度对齐 → 效果与母带；数据 → 音乐
     tts_asr_roundtrip.py   文本 → Piper 语音 → faster-whisper 转写，检查词召回
     video_code_render.py   分镜 JSON → Pillow 逐帧绘制 → FFmpeg 编码 MP4，可混入音轨
+    biosignal_roundtrip.py 合成 ECG/EEG → WFDB 与 EDF → 读回并核对心率、标注、频谱峰
   references/
     decode/{audio,visual,timeseries,biosignals,rf,spatial}.md
     encode/{audio,visual,timeseries,biosignals,rf,spatial}.md
@@ -113,6 +114,8 @@ uv venv .venv && . .venv/bin/activate
 uv pip install numpy scipy matplotlib soundfile librosa pandas trimesh \
     piper-tts faster-whisper huggingface_hub sigmf pillow imageio-ffmpeg \
     mido pyloudnorm pedalboard
+# 生理信号写读（合成数据，仅供算法测试）
+uv pip install mne edfio wfdb neurokit2
 ```
 
 FFmpeg、GNU Radio、Blender 为独立软件。模型 API 需要各自的 key，通过环境变量设置（`OPENAI_API_KEY`、`GEMINI_API_KEY`、`ELEVENLABS_API_KEY`），不要写进代码。

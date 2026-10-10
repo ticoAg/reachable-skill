@@ -33,7 +33,7 @@
 | OCR | Tesseract、PaddleOCR |
 | 视频镜头切分 | PySceneDetect |
 | 图像生成 | Diffusers |
-| 生理信号 | MNE、WFDB、NeuroKit2 |
+| 生理信号 | MNE、WFDB、NeuroKit2。合成 EDF/WFDB 已在本机写读，见 `examples/biosignal_roundtrip.py` |
 | 射频 | SigMF、GNU Radio |
 | 3D | Open3D、Trimesh、Blender |
 

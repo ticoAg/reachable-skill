@@ -17,7 +17,7 @@ synthetic = nk.ecg_simulate(duration=10, sampling_rate=250, heart_rate=70, rando
 
 - EDF：可用 MNE 的导出功能（依赖 `edfio`，核对所装版本），注意量化与单位限制。
 - WFDB：`wfdb.wrsamp` 写 header 与 dat。
-- 导出后回读，比较采样率、通道名、单位、数值范围和标注。
+- 导出后回读，比较采样率、通道名、单位、数值范围和标注。合成数据上的回读结果见 [end-to-end](../end-to-end.md) 第 7d 节：EDF 使用默认 `physical_range='auto'` 时，50 µV 正弦的回读误差小于 0.001 µV；同一次 WFDB 写出的是 32 位整数。
 
 ## 检查输出
 

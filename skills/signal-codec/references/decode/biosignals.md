@@ -43,6 +43,8 @@ signals, info = nk.ecg_process(ecg, sampling_rate=fs)   # ecg: 单导联、有�
 
 保留工具自己的 `signals` DataFrame 与 `info` 字典。
 
+上面的 EDF、WFDB 和 `ecg_process` 调用已用合成文件跑通，数字见 [end-to-end](../end-to-end.md) 第 7d 节。NeuroKit2 0.2.12 在 pandas 3 上会从 `epochs_create` 打出 copy-on-write 警告；返回的 R 峰和 `ECG_Rate` 仍然可用。
+
 ## 集成要点
 
 导出给模型时核对 channel order、单位、shape、窗口和 annotation 时间基。只传 ndarray 会丢参考信息，必要时保留 MNE 对象或原文件。EDF 导出有量化与元信息限制，回读比较数值与标注。多模态同步按实际时钟，不默认“同时开始”。

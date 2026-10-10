@@ -34,7 +34,7 @@ EXT = {
     "visual": {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp", ".gif",
                ".mp4", ".mov", ".mkv", ".webm", ".avi"},
     "timeseries": {".csv", ".tsv", ".parquet", ".json", ".jsonl", ".npy", ".npz"},
-    "biosignals": {".edf", ".bdf", ".fif", ".set", ".vhdr", ".hea", ".dat"},
+    "biosignals": {".edf", ".bdf", ".fif", ".set", ".vhdr", ".hea", ".dat", ".atr"},
     "rf": {".sigmf-meta", ".sigmf-data", ".cfile", ".cf32", ".cs16", ".iq", ".raw"},
     "spatial": {".ply", ".pcd", ".stl", ".obj", ".glb", ".gltf", ".las", ".laz", ".xyz", ".off"},
 }
