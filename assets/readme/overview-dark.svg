@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="still" width="720" height="730" viewBox="0 0 720 730" role="img" aria-labelledby="title description">
+  <title id="title">signal-codec：解码与编码</title>
+  <desc id="description">上方为解码：原始信号经工具处理，得到文本、数值、图表或原生对象。下方为独立的编码方向：按文本、提示、参数、乐谱或数据生成信号。光点从输入沿曲线流向处理节点，再流向输出；仅示意能力关系，不表示流量、性能或验证状态。</desc>
+  <style>
+    .hub { animation: receive 4.8s cubic-bezier(.77, 0, .175, 1) infinite; }
+    .encode-hub { animation-delay: -1.6s; }
+    /* The README can select a still view without relying on image media queries. */
+    #still:target .motion { display: none; }
+    #still:target .hub { animation: none; }
+    @keyframes receive {
+      0%, 30%, 80%, 100% { opacity: .68; }
+      46%, 58% { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .motion { display: none; }
+      .hub { animation: none; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="background" x2="0" y2="1">
+      <stop stop-color="#19231F"/>
+      <stop offset="1" stop-color="#201F1A"/>
+    </linearGradient>
+    <linearGradient id="decode" gradientUnits="userSpaceOnUse" x1="225" x2="494">
+      <stop stop-color="#84D9B7" stop-opacity=".24"/>
+      <stop offset=".5" stop-color="#84D9B7" stop-opacity=".50"/>
+      <stop offset="1" stop-color="#84D9B7" stop-opacity=".24"/>
+    </linearGradient>
+    <linearGradient id="encode" gradientUnits="userSpaceOnUse" x1="225" x2="494">
+      <stop stop-color="#F0B488" stop-opacity=".24"/>
+      <stop offset=".5" stop-color="#F0B488" stop-opacity=".50"/>
+      <stop offset="1" stop-color="#F0B488" stop-opacity=".24"/>
+    </linearGradient>
+    <g id="packet">
+      <rect x="-24" y="-4" width="24" height="8" rx="4" opacity=".20"/>
+      <rect x="-13" y="-4" width="13" height="8" rx="4" opacity=".45"/>
+      <circle r="4"/>
+    </g>
+  </defs>
+  <rect width="720" height="730" rx="20" fill="url(#background)"/>
+  <path d="M32 385H688" stroke="#38453D"/>
+  <g fill="none" stroke-width="12">
+    <g stroke="url(#decode)">
+      <path id="decode-visual" d="M225 120C282 120 295 198 350 198"/>
+      <path id="decode-audio" d="M225 165C282 165 295 212 350 212"/>
+      <path id="decode-timeseries" d="M225 210C282 210 295 226 350 226"/>
+      <path id="decode-biosignals" d="M225 255C282 255 295 240 350 240"/>
+      <path id="decode-iq" d="M225 300C282 300 295 254 350 254"/>
+      <path id="decode-3d" d="M225 345C282 345 295 268 350 268"/>
+      <path id="decode-text" d="M366 198C423 198 438 143 494 143"/>
+      <path id="decode-numbers" d="M366 220C423 220 438 204 494 204"/>
+      <path id="decode-charts" d="M366 242C423 242 438 265 494 265"/>
+      <path id="decode-native" d="M366 264C423 264 438 326 494 326"/>
+    </g>
+    <g stroke="url(#encode)">
+      <path id="encode-text" d="M225 526C282 526 295 575 350 575"/>
+      <path id="encode-parameters" d="M225 601C282 601 295 604 350 604"/>
+      <path id="encode-data" d="M225 676C282 676 295 633 350 633"/>
+      <path id="encode-audio" d="M366 569C423 569 438 506 494 506"/>
+      <path id="encode-visual" d="M366 591C423 591 438 564 494 564"/>
+      <path id="encode-iq" d="M366 613C423 613 438 622 494 622"/>
+      <path id="encode-3d" d="M366 635C423 635 438 680 494 680"/>
+    </g>
+  </g>
+  <!-- Packets follow the existing paths; opacity hides each loop's return jump. -->
+  <g class="motion" fill="#84D9B7" aria-hidden="true">
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="0s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-visual"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="0s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.24s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-audio"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.24s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.48s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-timeseries"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.48s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.72s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-biosignals"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.72s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.96s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-iq"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.96s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-1.2s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#decode-3d"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-1.2s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="0s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#decode-text"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.32s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#decode-numbers"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.32s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.64s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#decode-charts"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.64s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-.96s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#decode-native"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-.96s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+  </g>
+  <g class="motion" fill="#F0B488" aria-hidden="true">
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-1.6s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#encode-text"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-1.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-2s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#encode-parameters"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-2s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-2.4s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.44;1"><mpath href="#encode-data"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-2.4s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.06;.38;.44;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-1.6s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#encode-audio"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-1.6s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-1.92s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#encode-visual"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-1.92s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-2.24s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#encode-iq"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-2.24s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+    <use href="#packet" opacity="0">
+      <animateMotion dur="4.8s" begin="-2.56s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.5;.94;1"><mpath href="#encode-3d"/></animateMotion>
+      <animate attributeName="opacity" dur="4.8s" begin="-2.56s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;.5;.56;.88;.94;1"/>
+    </use>
+  </g>
+  <g fill="#84D9B7">
+    <rect class="hub" x="350" y="189" width="16" height="88" rx="8"/>
+    <circle cx="225" cy="120" r="5"/>
+    <circle cx="225" cy="165" r="5"/>
+    <circle cx="225" cy="210" r="5"/>
+    <circle cx="225" cy="255" r="5"/>
+    <circle cx="225" cy="300" r="5"/>
+    <circle cx="225" cy="345" r="5"/>
+    <circle cx="494" cy="143" r="5"/>
+    <circle cx="494" cy="204" r="5"/>
+    <circle cx="494" cy="265" r="5"/>
+    <circle cx="494" cy="326" r="5"/>
+  </g>
+  <g fill="#F0B488" transform="translate(0 16)">
+    <rect class="hub encode-hub" x="350" y="544" width="16" height="88" rx="8"/>
+    <circle cx="225" cy="510" r="5"/>
+    <circle cx="225" cy="585" r="5"/>
+    <circle cx="225" cy="660" r="5"/>
+    <circle cx="494" cy="490" r="5"/>
+    <circle cx="494" cy="548" r="5"/>
+    <circle cx="494" cy="606" r="5"/>
+    <circle cx="494" cy="664" r="5"/>
+  </g>
+  <g font-family="'Avenir Next', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" fill="#E9EFE8" dominant-baseline="middle">
+    <g font-weight="600">
+      <text x="32" y="64">原始信号</text>
+      <text x="518" y="64">可读结果</text>
+      <text x="32" y="442">内容与参数</text>
+      <text x="518" y="442">生成信号</text>
+      <text x="358" y="160" text-anchor="middle" font-size="36" fill="#84D9B7">解码</text>
+      <text x="358" y="532" text-anchor="middle" font-size="36" fill="#F0B488">编码</text>
+    </g>
+    <text x="32" y="120">图像 · 视频</text>
+    <text x="32" y="165">音频</text>
+    <text x="32" y="210">时序数据</text>
+    <text x="32" y="255">生理信号</text>
+    <text x="32" y="300">RF / IQ</text>
+    <text x="32" y="345">点云 · 网格</text>
+    <text x="518" y="143">文本</text>
+    <text x="518" y="204">数值</text>
+    <text x="518" y="265">图表</text>
+    <text x="518" y="326">原生对象</text>
+    <text x="32" y="526">文本 · 提示</text>
+    <text x="32" y="601">参数 · 乐谱</text>
+    <text x="32" y="676">数据</text>
+    <text x="518" y="506">语音 · 音乐</text>
+    <text x="518" y="564">图像 · 视频</text>
+    <text x="518" y="622">波形 · IQ</text>
+    <text x="518" y="680">3D 几何</text>
+  </g>
+</svg>
